@@ -48,27 +48,14 @@ class Category(MPTTModel):
         return Category.objects.filter(parent=self, is_active=True)
 
     def get_products_count(self):
-        # Подсчет активных товаров в текущей и всех дочерних категориях
         descendants = self.get_descendants(include_self=True)
         return Product.objects.filter(category__in=descendants, is_active=True).count()
 
     def get_all_children(self):
-        # Этот метод заменяется `get_descendants()` в MPTT
         return self.get_descendants(include_self=True)
 
     def get_all_parents(self):
-        # Этот метод заменяется `get_ancestors()` в MPTT
         return self.get_ancestors(include_self=True)
-
-    # def clean(self):
-    #     # Предотвращение циклических ссылок
-    #     if self.parent and self.parent in self.get_descendants():
-    #         raise ValidationError("Категория не может быть родительской для самой себя или для своих потомков.")
-
-    # def clean(self):  
-    #     if self.parent in self.get_all_children():
-    #         raise ValidationError("A user cannot have itself \
-    #                    or one of its' children as parent.")
 
 class Product(models.Model):
     title = models.CharField(
